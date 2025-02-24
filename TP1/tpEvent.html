@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Manipulation de Vue</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #monapp {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 90%;
+            max-width: 400px;
+        }
+        button {
+            background: #6b8cce;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            padding: 10px;
+            border: 2px solid #e0e7ff;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        .error {
+            color: #dc2626;
+            font-weight: 600;
+            margin: 15px 0 0;
+            padding: 8px;
+            background: #fee2e2;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .counter {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 15px;
+            min-width: 40px;
+            display: inline-block;
+        }
+        .button-group {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="monapp">
+        <button @click="titre='Cliqué!'">{{ titre }}</button>
+
+        <div class="button-group">
+            <button @click="compteur++">+</button>
+            <span class="counter">{{ compteur }}</span>
+            <button @click="compteur--">-</button>
+        </div>
+
+        <input type="text" @input="affiche" placeholder="Tapez ici...">
+        
+        <p v-if="errorr" class="error"> {{ errorr_text }}</p>
+    </div>
+
+    <script>
+        const appli = {
+            data() {
+                return {
+                    titre: 'Cliquez-moi!',
+                    compteur: 0,
+                    errorr: false,
+                    errorr_text: '',
+                };
+            },
+            methods: {
+                affiche(event) {
+                    if (event.target.value.includes(" ")) {
+                        this.errorr = true;
+                        this.errorr_text = "Attention : Espaces interdits !";
+                    } else {
+                        this.errorr = false;
+                    }
+                },
+            },
+        };
+
+        Vue.createApp(appli).mount("#monapp");
+    </script>
+</body>
+</html>

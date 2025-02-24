@@ -1,0 +1,91 @@
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Contrôle simple</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #f3f4f6;
+            display: grid;
+            place-items: center;
+            margin: 0;
+        }
+        #monapp {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #1e293b;
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+        label {
+            display: block;
+            margin: 0.8rem 0;
+            color: #475569;
+        }
+        input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: #4f46e5;
+        }
+        input[type="checkbox"] {
+            accent-color: #4f46e5;
+            margin-right: 0.5rem;
+        }
+        p {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="monapp">
+        <h2>Couleur</h2>
+        <label>
+            <input type="radio" value="red" v-model="color">
+            Rouge
+        </label>
+        
+        <label>
+            <input type="radio" value="green" v-model="color">
+            Vert
+        </label>
+        
+        <label>
+            <input type="radio" value="yellow" v-model="color">
+            Yellow
+        </label>
+        
+        <label>
+            <input type="radio" value="pink" v-model="color">
+            Pink
+        </label>
+        <br>
+        <br>
+
+        
+        <label>
+            <input type="checkbox" v-model="isVisible">
+            Afficher le texte
+        </label>
+
+        <p v-if="isVisible" :style="{color: color}">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit...
+        </p>
+    </div>
+    <script>
+        const appli = {
+            data() {
+                return {
+                    color: "black",
+                    isVisible: true
+                }
+            }
+        };
+        Vue.createApp(appli).mount("#monapp");
+    </script>
+</body>
+</html>
