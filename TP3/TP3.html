@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <title>Gestion des Tâches avec Vue.js</title>
+  <style>
+    body {
+      background: #f9f9f9;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .task-list {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border: 1px solid #ccc;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+    .filters {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .filters button {
+      margin: 0 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+    li.completed h3 {
+      text-decoration: line-through;
+      color: #777;
+    }
+    button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="task-list">
+      <h1>Gestion des Tâches</h1>
+      <div class="filters">
+        <button
+          @click="filter = 'all'"
+          :class="{ active: filter === 'all' }"
+        >
+          Toutes ({{ totalTasks }})
+        </button>
+        <button
+          @click="filter = 'todo'"
+          :class="{ active: filter === 'todo' }"
+        >
+          À faire ({{ todoCount }})
+        </button>
+        <button
+          @click="filter = 'done'"
+          :class="{ active: filter === 'done' }"
+        >
+          Terminées ({{ doneCount }})
+        </button>
+      </div>
+      <ul>
+        <li 
+          v-for="task in filteredTasks" 
+          :key="task.id" 
+          :class="{ completed: task.completed }"
+        >
+          <h3>{{ task.title }}</h3>
+          <p>{{ task.description }}</p>
+          <button
+            v-show="!task.completed"
+            @click="markAsCompleted(task.id)"
+          >
+            Marquer comme terminée
+          </button>
+        </li>
+      </ul>
+      <p v-if="tasks.length === 0">Chargement des tâches...</p>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          tasks: [],
+          filter: 'all'
+        };
+      },
+      computed: {
+        filteredTasks() {
+          switch(this.filter) {
+            case 'todo': return this.tasks.filter(t => !t.completed);
+            case 'done': return this.tasks.filter(t => t.completed);
+            default: return this.tasks;
+          }
+        },
+        totalTasks() {
+          return this.tasks.length;
+        },
+        todoCount() {
+          return this.tasks.filter(t => !t.completed).length;
+        },
+        doneCount() {
+          return this.tasks.filter(t => t.completed).length;
+        }
+      },
+      methods: {
+        markAsCompleted(taskId) {
+          const task = this.tasks.find(t => t.id === taskId);
+          if (task) task.completed = true;
+        }
+      },
+      async created() {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          const response = await fetch('taskList.json');
+          if (!response.ok) throw new Error('Erreur HTTP');
+          
+          const data = await response.json();
+          this.tasks = data.map(task => ({
+            ...task,
+            completed: typeof task.completed === 'string' 
+              ? task.completed === 'true' 
+              : task.completed
+          }));
+          
+        } catch (error) {
+          console.error('Erreur:', error);
+          alert('Impossible de charger les tâches');
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
